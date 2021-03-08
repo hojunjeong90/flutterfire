@@ -5,6 +5,7 @@
 #import <Flutter/Flutter.h>
 
 #import "Firebase/Firebase.h"
+#import "MLKit.h"
 
 @interface FLTFirebaseMlVisionPlugin : NSObject <FlutterPlugin>
 + (void)handleError:(NSError *)error result:(FlutterResult)result;

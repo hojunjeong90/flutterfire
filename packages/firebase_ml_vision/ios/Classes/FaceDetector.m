@@ -5,22 +5,22 @@
 #import "FLTFirebaseMlVisionPlugin.h"
 
 @interface FaceDetector ()
-@property FIRVisionFaceDetector *detector;
+@property MLKFaceDetector *detector;
 @end
 
 @implementation FaceDetector
 - (instancetype)initWithVision:(FIRVision *)vision options:(NSDictionary *)options {
   self = [super init];
   if (self) {
-    _detector = [vision faceDetectorWithOptions:[FaceDetector parseOptions:options]];
+    _detector = [MLKFaceDetector faceDetectorWithOptions:options]:[FaceDetector parseOptions:options]];
   }
   return self;
 }
 
-- (void)handleDetection:(FIRVisionImage *)image result:(FlutterResult)result {
+- (void)handleDetection:(MLKVisionImage *)image result:(FlutterResult)result {
   [_detector
       processImage:image
-        completion:^(NSArray<FIRVisionFace *> *_Nullable faces, NSError *_Nullable error) {
+        completion:^(NSArray<MLKFace *> *_Nullable faces, NSError *_Nullable error) {
           if (error) {
             [FLTFirebaseMlVisionPlugin handleError:error result:result];
             return;
@@ -30,12 +30,10 @@
           }
 
           NSMutableArray *faceData = [NSMutableArray array];
-          for (FIRVisionFace *face in faces) {
+          for (MLKFace *face in faces) {
             id smileProb = face.hasSmilingProbability ? @(face.smilingProbability) : [NSNull null];
-            id leftProb =
-                face.hasLeftEyeOpenProbability ? @(face.leftEyeOpenProbability) : [NSNull null];
-            id rightProb =
-                face.hasRightEyeOpenProbability ? @(face.rightEyeOpenProbability) : [NSNull null];
+            id leftProb = face.hasLeftEyeOpenProbability ? @(face.leftEyeOpenProbability) : [NSNull null];
+            id rightProb = face.hasRightEyeOpenProbability ? @(face.rightEyeOpenProbability) : [NSNull null];
 
             NSDictionary *data = @{
               @"left" : @(face.frame.origin.x),
@@ -52,54 +50,54 @@
               @"trackingId" : face.hasTrackingID ? @(face.trackingID) : [NSNull null],
               @"landmarks" : @{
                 @"bottomMouth" : [FaceDetector getLandmarkPosition:face
-                                                          landmark:FIRFaceLandmarkTypeMouthBottom],
+                                                          landmark:MLKFaceLandmarkTypeMouthBottom],
                 @"leftCheek" : [FaceDetector getLandmarkPosition:face
-                                                        landmark:FIRFaceLandmarkTypeLeftCheek],
+                                                        landmark:MLKFaceLandmarkTypeLeftCheek],
                 @"leftEar" : [FaceDetector getLandmarkPosition:face
-                                                      landmark:FIRFaceLandmarkTypeLeftEar],
+                                                      landmark:MLKFaceLandmarkTypeLeftEar],
                 @"leftEye" : [FaceDetector getLandmarkPosition:face
-                                                      landmark:FIRFaceLandmarkTypeLeftEye],
+                                                      landmark:MLKFaceLandmarkTypeLeftEye],
                 @"leftMouth" : [FaceDetector getLandmarkPosition:face
-                                                        landmark:FIRFaceLandmarkTypeMouthLeft],
+                                                        landmark:MLKFaceLandmarkTypeMouthLeft],
                 @"noseBase" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:FIRFaceLandmarkTypeNoseBase],
+                                                       landmark:MLKFaceLandmarkTypeNoseBase],
                 @"rightCheek" : [FaceDetector getLandmarkPosition:face
-                                                         landmark:FIRFaceLandmarkTypeRightCheek],
+                                                         landmark:MLKFaceLandmarkTypeRightCheek],
                 @"rightEar" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:FIRFaceLandmarkTypeRightEar],
+                                                       landmark:MLKFaceLandmarkTypeRightEar],
                 @"rightEye" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:FIRFaceLandmarkTypeRightEye],
+                                                       landmark:MLKFaceLandmarkTypeRightEye],
                 @"rightMouth" : [FaceDetector getLandmarkPosition:face
-                                                         landmark:FIRFaceLandmarkTypeMouthRight],
+                                                         landmark:MLKFaceLandmarkTypeMouthRight],
               },
               @"contours" : @{
-                @"allPoints" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeAll],
-                @"face" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeFace],
-                @"leftEye" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLeftEye],
+                @"allPoints" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeAll],
+                @"face" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeFace],
+                @"leftEye" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLeftEye],
                 @"leftEyebrowBottom" :
                     [FaceDetector getContourPoints:face
-                                           contour:FIRFaceContourTypeLeftEyebrowBottom],
+                                           contour:MLKFaceContourTypeLeftEyebrowBottom],
                 @"leftEyebrowTop" :
-                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLeftEyebrowTop],
+                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLeftEyebrowTop],
                 @"lowerLipBottom" :
-                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLowerLipBottom],
+                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLowerLipBottom],
                 @"lowerLipTop" : [FaceDetector getContourPoints:face
-                                                        contour:FIRFaceContourTypeLowerLipTop],
+                                                        contour:MLKFaceContourTypeLowerLipTop],
                 @"noseBottom" : [FaceDetector getContourPoints:face
-                                                       contour:FIRFaceContourTypeNoseBottom],
+                                                       contour:MLKFaceContourTypeNoseBottom],
                 @"noseBridge" : [FaceDetector getContourPoints:face
-                                                       contour:FIRFaceContourTypeNoseBridge],
+                                                       contour:MLKFaceContourTypeNoseBridge],
                 @"rightEye" : [FaceDetector getContourPoints:face
-                                                     contour:FIRFaceContourTypeRightEye],
+                                                     contour:MLKFaceContourTypeRightEye],
                 @"rightEyebrowBottom" :
                     [FaceDetector getContourPoints:face
-                                           contour:FIRFaceContourTypeRightEyebrowBottom],
+                                           contour:MLKFaceContourTypeRightEyebrowBottom],
                 @"rightEyebrowTop" :
-                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeRightEyebrowTop],
+                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeRightEyebrowTop],
                 @"upperLipBottom" :
-                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeUpperLipBottom],
+                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeUpperLipBottom],
                 @"upperLipTop" : [FaceDetector getContourPoints:face
-                                                        contour:FIRFaceContourTypeUpperLipTop],
+                                                        contour:MLKFaceContourTypeUpperLipTop],
               }
             };
 
@@ -110,8 +108,8 @@
         }];
 }
 
-+ (id)getLandmarkPosition:(FIRVisionFace *)face landmark:(FIRFaceLandmarkType)landmarkType {
-  FIRVisionFaceLandmark *landmark = [face landmarkOfType:landmarkType];
++ (id)getLandmarkPosition:(MLKVisionFace *)face landmark:(MLKFaceLandmarkType)landmarkType {
+    MLKFaceLandmark *landmark = [face landmarkOfType:landmarkType];
   if (landmark) {
     return @[ landmark.position.x, landmark.position.y ];
   }
@@ -119,13 +117,13 @@
   return [NSNull null];
 }
 
-+ (id)getContourPoints:(FIRVisionFace *)face contour:(FIRFaceContourType)contourType {
-  FIRVisionFaceContour *contour = [face contourOfType:contourType];
++ (id)getContourPoints:(MLKVisionFace *)face contour:(MLKFaceContourType)contourType {
+  MLKFaceContour *contour = [face contourOfType:contourType];
   if (contour) {
-    NSArray<FIRVisionPoint *> *contourPoints = contour.points;
+    NSArray<MLKVisionPoint *> *contourPoints = contour.points;
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:[contourPoints count]];
     for (int i = 0; i < [contourPoints count]; i++) {
-      FIRVisionPoint *point = [contourPoints objectAtIndex:i];
+      MLKVisionPoint *point = [contourPoints objectAtIndex:i];
       [result insertObject:@[ point.x, point.y ] atIndex:i];
     }
     return [result copy];
@@ -134,28 +132,28 @@
   return [NSNull null];
 }
 
-+ (FIRVisionFaceDetectorOptions *)parseOptions:(NSDictionary *)optionsData {
-  FIRVisionFaceDetectorOptions *options = [[FIRVisionFaceDetectorOptions alloc] init];
++ (MLKFaceDetectorOptions *)parseOptions:(NSDictionary *)optionsData {
+  MLKFaceDetectorOptions *options = [[MLKFaceDetectorOptions alloc] init];
 
   NSNumber *enableClassification = optionsData[@"enableClassification"];
   if (enableClassification.boolValue) {
-    options.classificationMode = FIRVisionFaceDetectorClassificationModeAll;
+    options.classificationMode = MLKFaceDetectorClassificationModeAll;
   } else {
-    options.classificationMode = FIRVisionFaceDetectorClassificationModeNone;
+    options.classificationMode = MLKFaceDetectorClassificationModeNone;
   }
 
   NSNumber *enableLandmarks = optionsData[@"enableLandmarks"];
   if (enableLandmarks.boolValue) {
-    options.landmarkMode = FIRVisionFaceDetectorLandmarkModeAll;
+    options.landmarkMode = MLKFaceDetectorLandmarkModeAll;
   } else {
-    options.landmarkMode = FIRVisionFaceDetectorLandmarkModeNone;
+    options.landmarkMode = MLKFaceDetectorLandmarkModeNone;
   }
 
   NSNumber *enableContours = optionsData[@"enableContours"];
   if (enableContours.boolValue) {
-    options.contourMode = FIRVisionFaceDetectorContourModeAll;
+    options.contourMode = MLKFaceDetectorContourModeAll;
   } else {
-    options.contourMode = FIRVisionFaceDetectorContourModeNone;
+    options.contourMode = MLKFaceDetectorContourModeNone;
   }
 
   NSNumber *enableTracking = optionsData[@"enableTracking"];
@@ -166,9 +164,9 @@
 
   NSString *mode = optionsData[@"mode"];
   if ([mode isEqualToString:@"accurate"]) {
-    options.performanceMode = FIRVisionFaceDetectorPerformanceModeAccurate;
+    options.performanceMode = MLKFaceDetectorPerformanceModeAccurate;
   } else if ([mode isEqualToString:@"fast"]) {
-    options.performanceMode = FIRVisionFaceDetectorPerformanceModeFast;
+    options.performanceMode = MLKFaceDetectorPerformanceModeFast;
   }
 
   return options;

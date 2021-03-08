@@ -35,6 +35,7 @@ An SDK that brings Google's machine learning expertise to Android and iOS apps i
   s.dependency 'Flutter'
   s.dependency 'firebase_core'
   s.dependency 'Firebase/MLVision', firebase_sdk_version
+  s.dependency 'GoogleMLKit/FaceDetection'
   s.ios.deployment_target = '10.0'
   s.static_framework = true
 
