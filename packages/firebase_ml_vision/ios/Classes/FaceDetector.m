@@ -109,7 +109,7 @@
 }
 
 + (id)getLandmarkPosition:(MLKVisionFace *)face landmark:(FIRFaceLandmarkType)landmarkType {
-    MLKFaceLandmark *landmark = [face landmarkOfType:landmarkType];
+    FIRFaceLandmark *landmark = [face landmarkOfType:landmarkType];
   if (landmark) {
     return @[ landmark.position.x, landmark.position.y ];
   }
@@ -118,7 +118,7 @@
 }
 
 + (id)getContourPoints:(MLKVisionFace *)face contour:(FIRFaceContourType)contourType {
-  MLKFaceContour *contour = [face contourOfType:contourType];
+  FIRFaceContour *contour = [face contourOfType:contourType];
   if (contour) {
     NSArray<MLKVisionPoint *> *contourPoints = contour.points;
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:[contourPoints count]];
