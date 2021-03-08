@@ -50,54 +50,54 @@
               @"trackingId" : face.hasTrackingID ? @(face.trackingID) : [NSNull null],
               @"landmarks" : @{
                 @"bottomMouth" : [FaceDetector getLandmarkPosition:face
-                                                          landmark:MLKFaceLandmarkTypeMouthBottom],
+                                                          landmark:FIRFaceLandmarkTypeMouthBottom],
                 @"leftCheek" : [FaceDetector getLandmarkPosition:face
-                                                        landmark:MLKFaceLandmarkTypeLeftCheek],
+                                                        landmark:FIRFaceLandmarkTypeLeftCheek],
                 @"leftEar" : [FaceDetector getLandmarkPosition:face
-                                                      landmark:MLKFaceLandmarkTypeLeftEar],
+                                                      landmark:FIRFaceLandmarkTypeLeftEar],
                 @"leftEye" : [FaceDetector getLandmarkPosition:face
-                                                      landmark:MLKFaceLandmarkTypeLeftEye],
+                                                      landmark:FIRFaceLandmarkTypeLeftEye],
                 @"leftMouth" : [FaceDetector getLandmarkPosition:face
-                                                        landmark:MLKFaceLandmarkTypeMouthLeft],
+                                                        landmark:FIRFaceLandmarkTypeMouthLeft],
                 @"noseBase" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:MLKFaceLandmarkTypeNoseBase],
+                                                       landmark:FIRFaceLandmarkTypeNoseBase],
                 @"rightCheek" : [FaceDetector getLandmarkPosition:face
-                                                         landmark:MLKFaceLandmarkTypeRightCheek],
+                                                         landmark:FIRFaceLandmarkTypeRightCheek],
                 @"rightEar" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:MLKFaceLandmarkTypeRightEar],
+                                                       landmark:FIRFaceLandmarkTypeRightEar],
                 @"rightEye" : [FaceDetector getLandmarkPosition:face
-                                                       landmark:MLKFaceLandmarkTypeRightEye],
+                                                       landmark:FIRFaceLandmarkTypeRightEye],
                 @"rightMouth" : [FaceDetector getLandmarkPosition:face
-                                                         landmark:MLKFaceLandmarkTypeMouthRight],
+                                                         landmark:FIRFaceLandmarkTypeMouthRight],
               },
               @"contours" : @{
-                @"allPoints" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeAll],
-                @"face" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeFace],
-                @"leftEye" : [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLeftEye],
+                @"allPoints" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeAll],
+                @"face" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeFace],
+                @"leftEye" : [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLeftEye],
                 @"leftEyebrowBottom" :
                     [FaceDetector getContourPoints:face
-                                           contour:MLKFaceContourTypeLeftEyebrowBottom],
+                                           contour:FIRFaceContourTypeLeftEyebrowBottom],
                 @"leftEyebrowTop" :
-                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLeftEyebrowTop],
+                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLeftEyebrowTop],
                 @"lowerLipBottom" :
-                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeLowerLipBottom],
+                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeLowerLipBottom],
                 @"lowerLipTop" : [FaceDetector getContourPoints:face
-                                                        contour:MLKFaceContourTypeLowerLipTop],
+                                                        contour:FIRFaceContourTypeLowerLipTop],
                 @"noseBottom" : [FaceDetector getContourPoints:face
-                                                       contour:MLKFaceContourTypeNoseBottom],
+                                                       contour:FIRFaceContourTypeNoseBottom],
                 @"noseBridge" : [FaceDetector getContourPoints:face
-                                                       contour:MLKFaceContourTypeNoseBridge],
+                                                       contour:FIRFaceContourTypeNoseBridge],
                 @"rightEye" : [FaceDetector getContourPoints:face
-                                                     contour:MLKFaceContourTypeRightEye],
+                                                     contour:FIRFaceContourTypeRightEye],
                 @"rightEyebrowBottom" :
                     [FaceDetector getContourPoints:face
-                                           contour:MLKFaceContourTypeRightEyebrowBottom],
+                                           contour:FIRFaceContourTypeRightEyebrowBottom],
                 @"rightEyebrowTop" :
-                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeRightEyebrowTop],
+                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeRightEyebrowTop],
                 @"upperLipBottom" :
-                    [FaceDetector getContourPoints:face contour:MLKFaceContourTypeUpperLipBottom],
+                    [FaceDetector getContourPoints:face contour:FIRFaceContourTypeUpperLipBottom],
                 @"upperLipTop" : [FaceDetector getContourPoints:face
-                                                        contour:MLKFaceContourTypeUpperLipTop],
+                                                        contour:FIRFaceContourTypeUpperLipTop],
               }
             };
 
@@ -108,7 +108,7 @@
         }];
 }
 
-+ (id)getLandmarkPosition:(MLKVisionFace *)face landmark:(MLKFaceLandmarkType)landmarkType {
++ (id)getLandmarkPosition:(MLKVisionFace *)face landmark:(FIRFaceLandmarkType)landmarkType {
     MLKFaceLandmark *landmark = [face landmarkOfType:landmarkType];
   if (landmark) {
     return @[ landmark.position.x, landmark.position.y ];
@@ -117,7 +117,7 @@
   return [NSNull null];
 }
 
-+ (id)getContourPoints:(MLKVisionFace *)face contour:(MLKFaceContourType)contourType {
++ (id)getContourPoints:(MLKVisionFace *)face contour:(FIRFaceContourType)contourType {
   MLKFaceContour *contour = [face contourOfType:contourType];
   if (contour) {
     NSArray<MLKVisionPoint *> *contourPoints = contour.points;
