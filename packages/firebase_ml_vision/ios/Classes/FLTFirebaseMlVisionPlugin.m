@@ -44,17 +44,11 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
-  if ([@"BarcodeDetector#detectInImage" isEqualToString:call.method] ||
-      [@"FaceDetector#processImage" isEqualToString:call.method] ||
-      [@"ImageLabeler#processImage" isEqualToString:call.method] ||
-      [@"TextRecognizer#processImage" isEqualToString:call.method] ||
-      [@"DocumentTextRecognizer#processImage" isEqualToString:call.method]) {
+  if ([@"FaceDetector#processImage" isEqualToString:call.method]]) {
     [self handleDetection:call result:result];
-  } else if ([@"BarcodeDetector#close" isEqualToString:call.method] ||
-             [@"FaceDetector#close" isEqualToString:call.method] ||
-             [@"ImageLabeler#close" isEqualToString:call.method] ||
-             [@"TextRecognizer#close" isEqualToString:call.method] ||
-             [@"DocumentTextRecognizer#close" isEqualToString:call.method]) {
+  } else if (
+             [@"FaceDetector#close" isEqualToString:call.method]
+             ) {
     NSNumber *handle = call.arguments[@"handle"];
     [detectors removeObjectForKey:handle];
     result(nil);
@@ -64,31 +58,20 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
 }
 
 - (void)handleDetection:(FlutterMethodCall *)call result:(FlutterResult)result {
-  FIRVisionImage *image = [self dataToVisionImage:call.arguments];
+  MLKVisionImage *image = [self dataToVisionImage:call.arguments];
   NSDictionary *options = call.arguments[@"options"];
 
   NSNumber *handle = call.arguments[@"handle"];
   id<Detector> detector = detectors[handle];
   if (!detector) {
-    if ([call.method hasPrefix:@"BarcodeDetector"]) {
-      detector = [[BarcodeDetector alloc] initWithVision:[FIRVision vision] options:options];
-    } else if ([call.method hasPrefix:@"FaceDetector"]) {
-      detector = [[FaceDetector alloc] initWithVision:[FIRVision vision] options:options];
-    } else if ([call.method hasPrefix:@"ImageLabeler"]) {
-      detector = [[ImageLabeler alloc] initWithVision:[FIRVision vision] options:options];
-    } else if ([call.method hasPrefix:@"TextRecognizer"]) {
-      detector = [[TextRecognizer alloc] initWithVision:[FIRVision vision] options:options];
-    } else if ([call.method hasPrefix:@"DocumentTextRecognizer"]) {
-      detector = [[DocumentTextRecognizer alloc] initWithVision:[FIRVision vision] options:options];
-    }
-
+  detector = [[FaceDetector alloc] initWithVision:[FIRVision vision] options:options];
     [FLTFirebaseMlVisionPlugin addDetector:handle detector:detector];
   }
 
   [detectors[handle] handleDetection:image result:result];
 }
 
-- (FIRVisionImage *)dataToVisionImage:(NSDictionary *)imageData {
+- (MLKVisionImage *)dataToVisionImage:(NSDictionary *)imageData {
   NSString *imageType = imageData[@"type"];
 
   if ([@"file" isEqualToString:imageType]) {
@@ -103,7 +86,7 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
   }
 }
 
-- (FIRVisionImage *)filePathToVisionImage:(NSString *)filePath {
+- (MLKVisionImage *)filePathToVisionImage:(NSString *)filePath {
   UIImage *image = [UIImage imageWithContentsOfFile:filePath];
 
   if (image.imageOrientation != UIImageOrientationUp) {
@@ -117,10 +100,10 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
     image = newImage;
   }
 
-  return [[FIRVisionImage alloc] initWithImage:image];
+  return [[MLKVisionImage alloc] initWithImage:image];
 }
 
-- (FIRVisionImage *)bytesToVisionImage:(NSDictionary *)imageData {
+- (MLKVisionImage *)bytesToVisionImage:(NSDictionary *)imageData {
   FlutterStandardTypedData *byteData = imageData[@"bytes"];
   NSData *imageBytes = byteData.data;
 
@@ -213,7 +196,7 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
   return pxBuffer;
 }
 
-- (FIRVisionImage *)pixelBufferToVisionImage:(CVPixelBufferRef)pixelBufferRef {
+- (MLKVisionImage *)pixelBufferToVisionImage:(CVPixelBufferRef)pixelBufferRef {
   CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBufferRef];
 
   CIContext *temporaryContext = [CIContext contextWithOptions:nil];
@@ -225,7 +208,7 @@ static NSMutableDictionary<NSNumber *, id<Detector>> *detectors;
   UIImage *uiImage = [UIImage imageWithCGImage:videoImage];
   CVPixelBufferRelease(pixelBufferRef);
   CGImageRelease(videoImage);
-  return [[FIRVisionImage alloc] initWithImage:uiImage];
+  return [[MLKVisionImage alloc] initWithImage:uiImage];
 }
 
 + (void)addDetector:(NSNumber *)handle detector:(id<Detector>)detector {
